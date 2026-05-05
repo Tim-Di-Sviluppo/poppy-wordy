@@ -7,8 +7,8 @@
 
 import Phaser from 'phaser';
 import {
-  GRID, CANVAS_WIDTH, CANVAS_HEIGHT,
-  COLOURS, LETTER_WEIGHTS, GAME_OVER_Y, GAME_DURATION_SECONDS,
+  GRID, CANVAS_WIDTH, HEX_ROW_HEIGHT,
+  COLOURS, LETTER_WEIGHTS, GAME_OVER_OFFSET, GAME_DURATION_SECONDS,
 } from '../config/gameConfig';
 import { Bubble } from '../objects/Bubble';
 import { BubblePool } from '../systems/BubblePool';
@@ -51,6 +51,12 @@ export class GameScene extends Phaser.Scene {
 
   // ── State flag: prevents input during animations ──────────────
   private isBusy = false;
+
+  // ── Hex grid ghost ────────────────────────────────────────────
+  /** Graphics object for the ghost grid (redrawn when bubbles land). */
+  private hexGridGraphics!: Phaser.GameObjects.Graphics;
+  /** Deepest row that currently has at least one bubble (-1 = none). */
+  private deepestOccupiedRow = -1;
 
   constructor() {
     super({ key: 'GameScene' });
@@ -161,14 +167,17 @@ export class GameScene extends Phaser.Scene {
     const bg = this.add.graphics().setDepth(0);
     const screenHeight = this.scale.height;
 
-    // Main Light Surface
-    this.add.rectangle(0, 0, CANVAS_WIDTH, this.scale.height, 0xf9f9f7).setOrigin(0);
+    // Main surface
+    this.add.rectangle(0, 0, CANVAS_WIDTH, screenHeight, 0xf0f5f2).setOrigin(0);
 
-    // Top HUD Bar - subtle tonal difference
+    // Hex ghost grid — drawn into a reusable graphics object
+    this.hexGridGraphics = this.add.graphics().setDepth(1);
+    this.redrawHexGrid();
+
+    // Top HUD Bar
     bg.fillStyle(COLOURS.surfaceContainer, 1);
     bg.fillRect(0, 0, CANVAS_WIDTH, 68);
 
-    // Bottom Border of Top Bar
     bg.lineStyle(1, COLOURS.bubbleBorder, 0.4);
     bg.beginPath();
     bg.moveTo(0, 68);
@@ -176,23 +185,68 @@ export class GameScene extends Phaser.Scene {
     bg.strokePath();
 
     // Launcher Panel at the bottom
-    const panelY = screenHeight - 130;
+    const panelY = screenHeight - GAME_OVER_OFFSET;
     bg.fillStyle(COLOURS.surfaceContainer, 1);
-    bg.fillRect(0, panelY, CANVAS_WIDTH, 130);
+    bg.fillRect(0, panelY, CANVAS_WIDTH, GAME_OVER_OFFSET);
 
-    // Top Border of Launcher Panel
     bg.lineStyle(1, COLOURS.bubbleBorder, 0.4);
     bg.beginPath();
     bg.moveTo(0, panelY);
     bg.lineTo(CANVAS_WIDTH, panelY);
     bg.strokePath();
 
-    // Primary Accent Line
+    // Primary accent line
     bg.lineStyle(3, COLOURS.primary, 1);
     bg.beginPath();
     bg.moveTo(CANVAS_WIDTH / 2 - 40, panelY);
     bg.lineTo(CANVAS_WIDTH / 2 + 40, panelY);
     bg.strokePath();
+  }
+
+  /**
+   * Redraws the ghost hex grid with a progressive reveal:
+   * - Rows 0..deepestOccupiedRow+3 are fully visible
+   * - Rows deepestOccupiedRow+4..+7 fade linearly to 0
+   * - deepestOccupiedRow = -1 means no bubbles placed yet (shows first 3 rows)
+   */
+  private redrawHexGrid(): void {
+    const g = this.hexGridGraphics;
+    if (!g) return;
+    g.clear();
+
+    const r = GRID.bubbleRadius;
+    const screenHeight = this.scale.height;
+    const panelY = screenHeight - GAME_OVER_OFFSET;
+    const visibleRows = Math.ceil((panelY - GRID.topPadding) / HEX_ROW_HEIGHT) + 2;
+
+    // Fully visible up to this row (inclusive)
+    const fullRevealRow = this.deepestOccupiedRow + 3;
+    // Fade zone: fullRevealRow+1 .. fullRevealRow+FADE_ROWS
+    const FADE_ROWS = 5;
+    const BASE_RING_ALPHA = 0.22;
+    const BASE_DOT_ALPHA  = 0.14;
+
+    for (let row = 0; row < Math.min(visibleRows, GRID.maxRows); row++) {
+      // Compute alpha for this row
+      let alpha = 1.0;
+      if (row > fullRevealRow) {
+        const fade = (row - fullRevealRow) / FADE_ROWS;
+        alpha = Math.max(0, 1 - fade);
+      }
+      if (alpha <= 0) continue;
+
+      const colCount = GRID.cols - (row % 2 === 1 ? 1 : 0);
+      for (let col = 0; col < colCount; col++) {
+        const { x, y } = hexToWorld({ col, row });
+        if (y > panelY) continue;
+
+        g.lineStyle(1, 0x7ab898, BASE_RING_ALPHA * alpha);
+        g.strokeCircle(x, y, r - 2);
+
+        g.fillStyle(0x7ab898, BASE_DOT_ALPHA * alpha);
+        g.fillCircle(x, y, 2);
+      }
+    }
   }
 
   // ── Initial Grid Population ───────────────────────────────────
@@ -315,8 +369,14 @@ export class GameScene extends Phaser.Scene {
     this.pool.add(snapCoord, flying);
     flying.bounceImpact();
 
+    // Update grid reveal if bubble is on a deeper row
+    if (snapCoord.row > this.deepestOccupiedRow) {
+      this.deepestOccupiedRow = snapCoord.row;
+      this.redrawHexGrid();
+    }
+
     // Check game-over (bubble landed too low)
-    if (world.y > this.scale.height - 130) {
+    if (world.y > this.scale.height - GAME_OVER_OFFSET) {
       this.triggerGameOver();
       return;
     }
@@ -370,6 +430,13 @@ export class GameScene extends Phaser.Scene {
 
       const clearDuration = isolated.length * 30 + 400;
       this.time.delayedCall(clearDuration, () => {
+        // Recalculate deepest row — grid may retract if bottom bubbles cleared
+        const remaining = this.pool.getAll();
+        this.deepestOccupiedRow = remaining.length > 0
+          ? Math.max(...remaining.map(b => b.gridCoord?.row ?? 0))
+          : -1;
+        this.redrawHexGrid();
+
         this.isBusy = false;
         this.launcher.canShoot = true;
       });
