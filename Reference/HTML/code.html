@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Lexend:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#002110",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#8ee4af",
+                        "on-surface": "#1a1c1b",
+                        "on-primary-container": "#00683e",
+                        "primary-fixed": "#9ef5bf",
+                        "secondary-fixed-dim": "#ffb2b6",
+                        "inverse-on-surface": "#f1f1ef",
+                        "on-surface-variant": "#3f4941",
+                        "inverse-surface": "#2f3130",
+                        "on-secondary-fixed-variant": "#7f2833",
+                        "on-background": "#1a1c1b",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "surface-tint": "#086c42",
+                        "tertiary-container": "#f7ce48",
+                        "tertiary": "#735c00",
+                        "outline-variant": "#bec9bf",
+                        "on-tertiary-fixed": "#241a00",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#6e5700",
+                        "surface": "#f9f9f7",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffe087",
+                        "surface-container-highest": "#e2e3e1",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#83d8a4",
+                        "on-primary-fixed-variant": "#005230",
+                        "on-secondary-container": "#75202c",
+                        "surface-bright": "#f9f9f7",
+                        "surface-container": "#eeeeec",
+                        "surface-container-low": "#f4f4f2",
+                        "inverse-primary": "#83d8a4",
+                        "primary": "#086c42",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e2e3e1",
+                        "surface-dim": "#dadad8",
+                        "outline": "#6f7a71",
+                        "secondary-fixed": "#ffdadb",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#40000d",
+                        "background": "#f9f9f7",
+                        "secondary-container": "#fc8992",
+                        "tertiary-fixed-dim": "#ebc23e",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#9e3f49",
+                        "surface-container-high": "#e8e8e6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "safe-margin": "32px",
+                        "tile-gap": "12px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "base": "8px",
+                        "xl": "64px",
+                        "xs": "4px",
+                        "lg": "48px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Lexend"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-lg": ["Lexend"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["20px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "label-lg": ["18px", {"lineHeight": "1.2", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .floating-letter {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes bubble-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .bubble-anim {
+            animation: bubble-pulse 3s ease-in-out infinite;
+        }
+        [contenteditable]:focus {
+            outline: none;
+            background-color: rgba(142, 228, 175, 0.1);
+            border-radius: 4px;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col items-center overflow-hidden">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full z-50 flex justify-center items-center px-6 h-16 bg-[#8EE4AF]/10 border-b-2 border-emerald-100 shadow-sm">
+<div class="font-['Plus_Jakarta_SANS'] font-bold tracking-tight text-emerald-500 text-2xl font-black italic" style="">Poppy Wordy
+        </div>
+</header>
+<!-- Background Decorative Elements -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden">
+<div class="floating-letter absolute top-24 left-[10%] text-primary-container opacity-40 font-headline-xl" style="">P</div>
+<div class="floating-letter absolute top-40 right-[15%] text-tertiary-container opacity-40 font-headline-xl" style="">O</div>
+<div class="floating-letter absolute bottom-48 left-[20%] text-secondary-container opacity-40 font-headline-xl" style="">P</div>
+<div class="floating-letter absolute top-[60%] right-[10%] text-primary-container opacity-40 font-headline-xl" style="">Y</div>
+<div class="floating-letter absolute bottom-24 right-[25%] text-tertiary-container opacity-40 font-headline-xl" style="">W</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-start pt-32 w-full max-w-lg px-safe-margin text-center relative z-10">
+<!-- Subtitle Section -->
+<div class="mb-lg space-y-md">
+<p class="font-body-lg text-on-surface-variant max-w-xs mx-auto transition-colors duration-200" contenteditable="true" style="">
+                Pop the bubbles, build the words, and conquer the board.
+            </p>
+</div>
+<!-- Primary Action -->
+<div class="w-full space-y-md">
+<button class="bubble-anim w-full py-10 px-lg bg-primary-container text-on-primary-container font-label-lg rounded-full shadow-[0_12px_0_0_#00683e20] hover:shadow-[0_6px_0_0_#00683e20] hover:translate-y-[6px] active:translate-y-[12px] active:shadow-none transition-all duration-150 flex flex-col items-center justify-center gap-base" style="">
+<span class="material-symbols-outlined text-[48px]" data-icon="play_circle" style='font-variation-settings: "FILL" 1;'>play_circle</span>
+<span class="text-2xl uppercase tracking-wider" style="">Play Now</span>
+</button>
+</div>
+<!-- Featured Daily Challenge Card -->
+<div class="mt-lg w-full bg-surface-container-lowest border border-outline-variant p-md rounded-xl shadow-sm flex items-center gap-md text-left">
+<div class="w-16 h-16 rounded-lg bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-headline-md" data-icon="emoji_events" style="">emoji_events</span>
+</div>
+<div>
+<p class="font-label-sm text-tertiary uppercase tracking-wider" style="">Daily Challenge</p>
+<h3 class="font-headline-md text-on-surface" style="">Ocean Explorer</h3>
+<p class="font-label-sm text-on-surface-variant" style="">Find 12 words about the sea</p>
+</div>
+<button class="ml-auto bg-primary text-on-primary p-2 rounded-full active:scale-90 transition-transform" style="">
+<span class="material-symbols-outlined" data-icon="arrow_forward" style="">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white border-t border-slate-100 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-[32px]">
+<div class="flex flex-col items-center justify-center text-emerald-600 bg-emerald-50 rounded-2xl px-6 py-2 font-['Plus_Jakarta_SANS'] text-[12px] font-semibold transition-all duration-150 ease-out active:scale-90">
+<span class="material-symbols-outlined" data-icon="videogame_asset" style='font-variation-settings: "FILL" 1;'>videogame_asset</span>
+<span class="" style="">Play</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-6 py-2 font-['Plus_Jakarta_SANS'] text-[12px] font-semibold hover:text-emerald-500 transition-all duration-150 ease-out active:scale-90">
+<span class="material-symbols-outlined" data-icon="equalizer" style="">equalizer</span>
+<span class="" style="">Stats</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-6 py-2 font-['Plus_Jakarta_SANS'] text-[12px] font-semibold hover:text-emerald-500 transition-all duration-150 ease-out active:scale-90">
+<span class="material-symbols-outlined" data-icon="settings" style="">settings</span>
+<span class="" style="">Settings</span>
+</div>
+</nav>
+<!-- Decorative Bottom Gradient -->
+<div class="fixed bottom-0 left-0 w-full h-24 bg-gradient-to-t from-surface to-transparent pointer-events-none"></div>
+</body></html>
